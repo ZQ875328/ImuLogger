@@ -66,7 +66,7 @@ function build_kernel (){
     fi
 
     cd ${SDK_PATH}/sdk
-    make buildkernel
+    make -j$(nproc) buildkernel
 
     # Check exit status
     check_exit_status
@@ -115,7 +115,7 @@ function build_sdk (){
     fi
 
     cd ${SDK_PATH}/sdk
-    make
+    make -j$(nproc)
 
     # Check exit status
     check_exit_status
@@ -152,7 +152,7 @@ function build_worker (){
 
         # Check mkdeps
         if [ ! -f ${TOPDIR}/tools/mkdeps ]; then
-            make -C ${TOPDIR}/tools -f Makefile.host mkdeps
+            make -j$(nproc) -C ${TOPDIR}/tools -f Makefile.host mkdeps
         fi
 
         # Create out directory
@@ -162,7 +162,7 @@ function build_worker (){
         do
             if [ -f ${dirname}/.worker ]; then
                 WORKERDIR=${SPRESENSE_HOME}/${dirname}
-                make -C ${WORKERDIR} SDKDIR=${SDKDIR} TOPDIR=${TOPDIR} APPDIR=${APPDIR} OUTDIR=${OUTDIR}
+                make -j$(nproc) -C ${WORKERDIR} SDKDIR=${SDKDIR} TOPDIR=${TOPDIR} APPDIR=${APPDIR} OUTDIR=${OUTDIR}
 
                 # Check exit status
                 check_exit_status
