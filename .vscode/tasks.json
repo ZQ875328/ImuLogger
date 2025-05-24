@@ -83,6 +83,7 @@
 			"dependsOrder": "sequence",
 			"dependsOn": [
 				"Build application",
+				"Flash Entry Point",
 				"Flash worker"
 			],
 			"command": "${config:spresense.sdk.path}/sdk/tools/flash.sh",
@@ -166,6 +167,26 @@
 			"problemMatcher": [
 				"$gcc"
 			]
-		}
+		},
+		{
+			"label": "Flash Entry Point",
+			"type": "shell",
+			"command": "${config:spresense.sdk.path}/sdk/tools/flash.sh",
+			"args": [
+				"-c",
+				"${config:spresense.serial.port}",
+				"-b",
+				"${config:spresense.flashing.speed}",
+				"-w",
+				"init.rc",
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Entrypoint"
+			},
+			"group": "test",
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
 	]
 }
