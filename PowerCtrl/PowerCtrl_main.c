@@ -23,37 +23,37 @@ typedef enum tagPowerButton_e {
     PowerButton_ON,
 } PowerButton_e;
 
-typedef struct tagPowerCtrl_t {
+typedef struct tagPowerCtrl_main_t {
     PowerButton_e state;
     sem_t         smph;
-} PowerCtrl_t;
+} PowerCtrl_main_t;
 
 /* PROTOTYPES */
 
-static PowerCtrl_t* GetInstance(void);
-static int          HandleGpioInterrupt(int irq, FAR void* context, FAR void* arg);
-static int          Delay(uint32_t duration);
-static int          Wait(void);
-static int          Check1(void);
-static void         Check2(void);
-static void         InitLed(void);
-static int          ActivatePower(void);
-static void         DeactivatePower(void);
-static void         InitInterrupt(void);
-static void         WatchPowerButton(void);
+static PowerCtrl_main_t* GetInstance(void);
+static int               HandleGpioInterrupt(int irq, FAR void* context, FAR void* arg);
+static int               Delay(uint32_t duration);
+static int               Wait(void);
+static int               Check1(void);
+static void              Check2(void);
+static void              InitLed(void);
+static int               ActivatePower(void);
+static void              DeactivatePower(void);
+static void              InitInterrupt(void);
+static void              WatchPowerButton(void);
 
 /* VARIABLES */
 
-static PowerCtrl_t s_powerCtrl_instance;
+static PowerCtrl_main_t s_powerCtrl_main_instance;
 
 /* FUNCTIONS */
 
 /**
  * @brief Get PowerCtrl instance
  */
-static PowerCtrl_t* GetInstance(void)
+static PowerCtrl_main_t* GetInstance(void)
 {
-    return &s_powerCtrl_instance;
+    return &s_powerCtrl_main_instance;
 }
 
 /**
@@ -61,8 +61,8 @@ static PowerCtrl_t* GetInstance(void)
  */
 static int HandleGpioInterrupt(int irq, FAR void* context, FAR void* arg)
 {
-    PowerCtrl_t* self = GetInstance();
-    uint32_t pin      = (uint32_t) (uintptr_t) arg;
+    PowerCtrl_main_t* self = GetInstance();
+    uint32_t pin = (uint32_t) (uintptr_t) arg;
 
     PRINT_DEBUG("POWER_SW pin %x %d", pin, board_gpio_read(pin));
     cxd56_gpioint_invert(pin);
@@ -83,7 +83,7 @@ static int HandleGpioInterrupt(int irq, FAR void* context, FAR void* arg)
  */
 static int Delay(uint32_t duration)
 {
-    PowerCtrl_t* self = GetInstance();
+    PowerCtrl_main_t* self = GetInstance();
     int ret;
 
     ret = nxsem_tickwait(&self->smph, duration);
@@ -104,7 +104,7 @@ static int Delay(uint32_t duration)
  */
 static int Wait(void)
 {
-    PowerCtrl_t* self = GetInstance();
+    PowerCtrl_main_t* self = GetInstance();
     int ret = sem_wait(&self->smph);
 
     if (ret == OK) {
@@ -191,7 +191,7 @@ static void InitLed(void)
  */
 static int ActivatePower(void)
 {
-    PowerCtrl_t* self = GetInstance();
+    PowerCtrl_main_t* self = GetInstance();
 
     PRINT_DEBUG("POWER_SW pin %x %d", POWER_SW, board_gpio_read(POWER_SW));
 
@@ -229,7 +229,7 @@ static void DeactivatePower(void)
  */
 static void InitInterrupt(void)
 {
-    PowerCtrl_t* self = GetInstance();
+    PowerCtrl_main_t* self = GetInstance();
 
     sem_init(&self->smph, 0, 0);
     sem_setprotocol(&self->smph, SEM_PRIO_NONE);
@@ -250,8 +250,8 @@ static void InitInterrupt(void)
  */
 static void WatchPowerButton(void)
 {
-    PowerCtrl_t* self = GetInstance();
-    irqstate_t flags  = enter_critical_section();
+    PowerCtrl_main_t* self = GetInstance();
+    irqstate_t flags       = enter_critical_section();
 
     while (true) {
         int ret = Wait();
