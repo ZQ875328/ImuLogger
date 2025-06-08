@@ -2,9 +2,10 @@
 
 #include <nuttx/config.h>
 #include <arch/board/board.h>
-
-#include <mqueue.h>
 #include <fcntl.h>
+#include <mqueue.h>
+#include <nuttx/config.h>
+
 #include "Common_DebugPrint.h"
 
 /* MACROS */
