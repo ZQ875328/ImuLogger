@@ -1,6 +1,5 @@
 /* HEADERS */
 
-#include <nuttx/config.h>
 #include <arch/board/board.h>
 #include <fcntl.h>
 #include <mqueue.h>
@@ -24,8 +23,14 @@ typedef enum tagPowerButton_e {
     PowerButton_ON,
 } PowerButton_e;
 
+typedef enum tagPowerSource_e {
+    PowerSource_BATTERY,
+    PowerSource_USB,
+} PowerSource_e;
+
 typedef struct tagPowerCtrl_main_t {
     PowerButton_e state;
+    PowerSource_e source;
     sem_t         smph;
 } PowerCtrl_main_t;
 
@@ -194,23 +199,27 @@ static int ActivatePower(void)
 {
     PowerCtrl_main_t* self = GetInstance();
 
-    PRINT_DEBUG("POWER_SW pin %x %d", POWER_SW, board_gpio_read(POWER_SW));
+    int power_sw = board_gpio_read(POWER_SW);
 
-    if (self->state == PowerButton_OFF) {
-        return ERROR;
+    if (power_sw == 1) {
+        /** @note 電源ボタンが押されてなければバッテリー動作でないとする． */
+        self->source = PowerSource_USB;
+        PRINT_DEBUG("Power source: USB");
+    } else {
+        self->source = PowerSource_BATTERY;
+        PRINT_DEBUG("Power source: Battery");
+
+        if (Check1() == ERROR) {
+            PRINT_DEBUG("Stop activating power, pin %x %d", POWER_SW, board_gpio_read(POWER_SW));
+            return ERROR;
+        }
+        board_gpio_config(PWR_EN, 0, false, false, PIN_FLOAT);
+        board_gpio_config(PWR_MODE, 0, false, false, PIN_FLOAT);
+        board_gpio_write(PWR_EN, 1);
+        // board_gpio_write(PWR_MODE, 1);
+        Check2();
     }
 
-    if (Check1() == ERROR) {
-        PRINT_DEBUG("POWER_SW pin %x %d", POWER_SW, board_gpio_read(POWER_SW));
-        PRINT_DEBUG("Stop activating power");
-        return ERROR;
-    }
-
-    board_gpio_config(PWR_EN, 0, false, false, PIN_FLOAT);
-    board_gpio_config(PWR_MODE, 0, false, false, PIN_FLOAT);
-    board_gpio_write(PWR_EN, 1);
-    // board_gpio_write(PWR_MODE, 1);
-    Check2();
     return OK;
 }
 
