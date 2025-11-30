@@ -2,8 +2,10 @@
 #define COMMON_DEBUGPRINT_H
 #include <stdio.h>
 
-#define _DEBUG_PRINT_INTERNAL(level, format, ...) \
-        printf("[%s] File <%s>, at line %d, in <%s>: " format "\n", level, __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+#define _DEBUG_PRINT_INTERNAL(level, format, ...)                                                                \
+        {                                                                                                        \
+            printf("[%s] File %s:%d, in %s: " format "\n", level, __FILE__, __LINE__, __func__, ## __VA_ARGS__); \
+        }
 
 // #define ENABLE_PRINT_ERROR
 // #define ENABLE_PRINT_WARNING
