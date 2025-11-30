@@ -6,6 +6,7 @@
 #include <nuttx/config.h>
 
 #include "Common_DebugPrint.h"
+#include "PowerCtrl.h"
 
 /* MACROS */
 
@@ -216,7 +217,7 @@ static int ActivatePower(void)
         board_gpio_config(PWR_EN, 0, false, false, PIN_FLOAT);
         board_gpio_config(PWR_MODE, 0, false, false, PIN_FLOAT);
         board_gpio_write(PWR_EN, 1);
-        // board_gpio_write(PWR_MODE, 1);
+        board_gpio_write(PWR_MODE, 0);
         Check2();
     }
 
@@ -291,7 +292,9 @@ int main(int argc, char* argv[])
         PRINT_ERROR("Failed to activate power");
         return ERROR;
     }
+    PowerCtrl_PowerReady();
     WatchPowerButton();
+    PowerCtrl_Shutdown();
     DeactivatePower();
     return 0;
 }
