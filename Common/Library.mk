@@ -1,0 +1,2 @@
+EXTRA_LIBPATHS += -L $(SPRESENSE_HOME)$(DELIM)Common
+EXTRA_LIBS     += -lCommon
