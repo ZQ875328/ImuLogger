@@ -125,6 +125,7 @@ function build_sdk (){
         mkdir -p ${SPRESENSE_HOME}/out
         cp -a ${SDK_PATH}/sdk/nuttx.spk ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx.spk
         cp -a ${SDK_PATH}/sdk/nuttx ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx
+        arm-none-eabi-objdump -d -S -l ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx > ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx.disasm.txt
     fi
 }
 
@@ -193,6 +194,7 @@ function clean_sdk (){
     if [ "${SPRESENSE_HOME}" != "" ]; then
         rm -f ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx.spk
         rm -f ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx
+        rm -f ${SPRESENSE_HOME}/out/${PROJECT_NAME}.nuttx.disasm.txt
     fi
 }
 

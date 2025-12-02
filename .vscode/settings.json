@@ -1,0 +1,7 @@
+{
+    "uncrustify.configPath.linux": ".vscode/uncrustify.cfg",
+    "uncrustify.configPath.osx": ".vscode/uncrustify.cfg",
+    "uncrustify.configPath.windows": ".vscode/uncrustify.cfg",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "zachflower.uncrustify"
+}

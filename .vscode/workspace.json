@@ -1,0 +1,11 @@
+{
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "workspace-bash",
+        "terminal.integrated.profiles.linux": {
+          "workspace-bash": {
+            "path": "/bin/bash",
+            "args": ["--init-file", "${workspaceFolder}/.vscode/init.sh", "-i"]
+          }
+        }
+      }
+}
